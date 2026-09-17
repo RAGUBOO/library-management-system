@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Online Library Management System</title>
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#eef1f5;
+}
+
+/* Header */
+header{
+    background:#2c3e50;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+/* Navigation */
+nav{
+    background:#34495e;
+    text-align:center;
+    padding:10px;
+}
+
+nav button{
+    background:white;
+    border:none;
+    padding:10px 18px;
+    margin:5px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+nav button:hover{
+    background:#1abc9c;
+    color:white;
+}
+
+/* Section styling */
+.section{
+    display:none;
+    padding:20px;
+}
+
+.active{
+    display:block;
+}
+
+/* Forms */
+input{
+    padding:10px;
+    margin:8px;
+    width:250px;
+}
+
+button.submit{
+    background:#1abc9c;
+    border:none;
+    color:white;
+    padding:10px 20px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button.submit:hover{
+    background:#16a085;
+}
+
+/* Search box */
+.searchBox{
+    padding:10px;
+    margin:10px 0;
+    width:300px;
+    max-width:90%;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-sizing:border-box;
+}
+
+/* Tables */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th, td{
+    border:1px solid #ccc;
+    padding:10px;
+    text-align:center;
+}
+
+th{
+    background:#2c3e50;
+    color:white;
+}
+
+.deleteBtn{
+    background:red;
+    color:white;
+    border:none;
+    padding:5px 10px;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+/* Beautiful User Side */
+#userPanel{
+    background:linear-gradient(135deg,#f8fbff,#eef7ff);
+    min-height:70vh;
+}
+.userHero{
+    background:linear-gradient(135deg,#2c3e50,#1abc9c);
+    color:white;
+    padding:28px;
+    border-radius:16px;
+    margin-bottom:22px;
+    box-shadow:0 8px 24px rgba(44,62,80,.18);
+}
+.userHero h2{margin:0 0 8px;font-size:28px}
+.userHero p{margin:0;opacity:.9}
+.userSearchWrap{
+    background:white;
+    padding:16px;
+    border-radius:14px;
+    box-shadow:0 4px 16px rgba(0,0,0,.08);
+    margin-bottom:20px;
+}
+.userSearch{
+    width:100%;
+    padding:14px 18px;
+    margin:0;
+    border:2px solid #e1e8ef;
+    border-radius:10px;
+    font-size:16px;
+    outline:none;
+    box-sizing:border-box;
+}
+.userSearch:focus{border-color:#1abc9c;box-shadow:0 0 0 3px rgba(26,188,156,.12)}
+#userBookTable{
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+    margin-top:0;
+}
+#userBookTable th{
+    background:#2c3e50;
+    padding:14px;
+}
+#userBookTable td{padding:14px;border-bottom:1px solid #edf0f2}
+#userBookTable tbody tr:hover{background:#f2fbf9;transition:.2s}
+.userBookCount{
+    display:inline-block;
+    margin-top:12px;
+    background:rgba(255,255,255,.18);
+    padding:7px 12px;
+    border-radius:20px;
+    font-size:14px;
+}
+.emptyBooks{
+    text-align:center;
+    padding:30px;
+    color:#7f8c8d;
+}
+
+
+/* Beautiful Admin Dashboard */
+#adminPanel{
+    background:linear-gradient(135deg,#f7f9fc,#eef3f7);
+    min-height:70vh;
+}
+.adminHeader{
+    background:linear-gradient(135deg,#2c3e50,#34495e);
+    color:white;
+    padding:26px;
+    border-radius:16px;
+    margin-bottom:22px;
+    box-shadow:0 8px 24px rgba(44,62,80,.18);
+}
+.adminHeader h2{margin:0 0 7px;font-size:28px}
+.adminHeader p{margin:0;opacity:.85}
+.adminStats{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin:20px 0;
+}
+.adminCard{
+    flex:1;
+    min-width:180px;
+    background:white;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 4px 16px rgba(0,0,0,.07);
+    border-left:5px solid #1abc9c;
+}
+.adminCard .number{font-size:27px;font-weight:bold;color:#2c3e50}
+.adminCard .label{color:#7f8c8d;margin-top:5px}
+.adminAddBox{
+    background:white;
+    padding:22px;
+    border-radius:16px;
+    box-shadow:0 5px 20px rgba(0,0,0,.07);
+    margin-bottom:22px;
+}
+.adminAddBox h3{margin-top:0;color:#2c3e50}
+.adminAddBox input{
+    border:1px solid #dce3e8;
+    border-radius:8px;
+    box-sizing:border-box;
+}
+.adminAddBox input:focus{
+    outline:none;
+    border-color:#1abc9c;
+    box-shadow:0 0 0 3px rgba(26,188,156,.12);
+}
+.adminTableBox{
+    background:white;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 5px 20px rgba(0,0,0,.07);
+    overflow-x:auto;
+}
+.adminSearch{
+    width:100%;
+    padding:13px 16px;
+    margin:0 0 15px;
+    border:2px solid #e1e8ef;
+    border-radius:9px;
+    box-sizing:border-box;
+    font-size:15px;
+    outline:none;
+}
+.adminSearch:focus{border-color:#1abc9c}
+#adminBookTable{margin-top:0;background:white}
+#adminBookTable th{padding:14px}
+#adminBookTable td{padding:13px}
+#adminBookTable tbody tr:hover{background:#f2fbf9}
+.deleteBtn{
+    background:#e74c3c;
+    transition:.2s;
+}
+.deleteBtn:hover{background:#c0392b;transform:scale(1.04)}
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📚 Online Library Management System</h1>
+</header>
+
+<nav>
+    <button onclick="showSection('home')">Home</button>
+    <button onclick="showSection('userLogin')">User Login</button>
+    <button onclick="showSection('adminLogin')">Admin Login</button>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="section active">
+    <h2>Welcome to Our Library</h2>
+    <p>This website allows users to view books and admins to manage the library system.</p>
+</div>
+
+<!-- USER LOGIN -->
+<div id="userLogin" class="section">
+    <h2>User Login</h2>
+    <input type="text" id="userName" placeholder="Username"><br>
+    <input type="password" id="userPass" placeholder="Password"><br>
+    <button class="submit" onclick="userLogin()">Login</button>
+</div>
+
+<!-- USER PANEL -->
+<div id="userPanel" class="section">
+    <div class="userHero">
+        <h2>📚 Discover Your Next Book</h2>
+        <p>Search our library and find books by title, author, or category.</p>
+        <span class="userBookCount" id="userBookCount">0 books available</span>
+    </div>
+
+    <div class="userSearchWrap">
+        <input type="text" id="userSearch" class="userSearch"
+               placeholder="🔍  Search books, authors or categories..."
+               onkeyup="searchUserBooks()">
+    </div>
+
+    <table id="userBookTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div id="adminLogin" class="section">
+    <h2>Admin Login</h2>
+    <input type="text" id="adminUser" placeholder="Admin Username"><br>
+    <input type="password" id="adminPass" placeholder="Password"><br>
+    <button class="submit" onclick="adminLogin()">Login</button>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="section">
+    <div class="adminHeader">
+        <h2>⚙️ Admin Dashboard</h2>
+        <p>Manage your library books quickly and easily.</p>
+    </div>
+
+    <div class="adminStats">
+        <div class="adminCard">
+            <div class="number" id="totalBooks">0</div>
+            <div class="label">📚 Total Books</div>
+        </div>
+        <div class="adminCard">
+            <div class="number" id="totalCategories">0</div>
+            <div class="label">🏷️ Categories</div>
+        </div>
+    </div>
+
+    <div class="adminAddBox">
+        <h3>➕ Add New Book</h3>
+        <input type="text" id="title" placeholder="Book Title"><br>
+        <input type="text" id="author" placeholder="Author"><br>
+        <input type="text" id="category" placeholder="Category"><br>
+        <button class="submit" onclick="addBook()">➕ Add Book</button>
+    </div>
+
+    <div class="adminTableBox">
+        <h3>📖 Library Books</h3>
+        <input type="text" id="adminSearch" class="adminSearch"
+               placeholder="🔍  Search by title, author or category..."
+               onkeyup="searchAdminBooks()">
+        <table id="adminBookTable">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+// Section switching
+function showSection(id){
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// Default login credentials
+const admin = {username:"admin", password:"1234"};
+const user = {username:"user", password:"1234"};
+
+// Admin Login
+function adminLogin(){
+    let u=document.getElementById("adminUser").value;
+    let p=document.getElementById("adminPass").value;
+
+    if(u===admin.username && p===admin.password){
+        alert("Admin Login Successful");
+        showSection("adminPanel");
+        loadBooks();
+    }else{
+        alert("Invalid Admin Login");
+    }
+}
+
+// User Login
+function userLogin(){
+    let u=document.getElementById("userName").value;
+    let p=document.getElementById("userPass").value;
+
+    if(u===user.username && p===user.password){
+        alert("User Login Successful");
+        showSection("userPanel");
+        loadUserBooks();
+    }else{
+        alert("Invalid User Login");
+    }
+}
+
+// Add Book
+function addBook(){
+    let title=document.getElementById("title").value;
+    let author=document.getElementById("author").value;
+    let category=document.getElementById("category").value;
+
+    if(title=="" || author=="" || category==""){
+        alert("Please fill all fields");
+        return;
+    }
+
+    let books=JSON.parse(localStorage.getItem("books")) || [];
+    books.push({title, author, category});
+    localStorage.setItem("books", JSON.stringify(books));
+
+    alert("Book Added Successfully");
+
+    document.getElementById("title").value="";
+    document.getElementById("author").value="";
+    document.getElementById("category").value="";
+
+    loadBooks();
+}
+
+// Load books in admin panel
+function loadBooks(){
+    let books=JSON.parse(localStorage.getItem("books")) || [];
+    let search=document.getElementById("adminSearch")?.value.toLowerCase().trim() || "";
+    let table=document.querySelector("#adminBookTable tbody");
+    table.innerHTML="";
+
+    let categories=[...new Set(books.map(book=>book.category.toLowerCase()))];
+
+    if(document.getElementById("totalBooks")){
+        document.getElementById("totalBooks").textContent=books.length;
+        document.getElementById("totalCategories").textContent=categories.length;
+    }
+
+    let filteredBooks=books.filter(book=>{
+        let data=(book.title+" "+book.author+" "+book.category).toLowerCase();
+        return data.includes(search);
+    });
+
+    if(filteredBooks.length===0){
+        table.innerHTML=`
+        <tr>
+            <td colspan="4" class="emptyBooks">
+                📚 No books found.
+            </td>
+        </tr>`;
+        return;
+    }
+
+    filteredBooks.forEach(book=>{
+        let index=books.indexOf(book);
+        table.innerHTML += `
+        <tr>
+            <td><strong>${book.title}</strong></td>
+            <td>${book.author}</td>
+            <td>🏷️ ${book.category}</td>
+            <td><button class="deleteBtn" onclick="deleteBook(${index})">🗑️ Delete</button></td>
+        </tr>`;
+    });
+}
+
+// Admin search
+function searchAdminBooks(){
+    loadBooks();
+}
+
+// Delete book
+function deleteBook(index){
+    let books=JSON.parse(localStorage.getItem("books"));
+    books.splice(index,1);
+    localStorage.setItem("books", JSON.stringify(books));
+    loadBooks();
+}
+
+// Load books for users
+function loadUserBooks(){
+    let books=JSON.parse(localStorage.getItem("books")) || [];
+    let search=document.getElementById("userSearch")?.value.toLowerCase().trim() || "";
+    let table=document.querySelector("#userBookTable tbody");
+    let count=document.getElementById("userBookCount");
+    table.innerHTML="";
+
+    let filteredBooks=books.filter(book=>{
+        let data=(book.title+" "+book.author+" "+book.category).toLowerCase();
+        return data.includes(search);
+    });
+
+    if(count){
+        count.textContent = filteredBooks.length + (filteredBooks.length === 1 ? " book found" : " books found");
+    }
+
+    if(filteredBooks.length === 0){
+        table.innerHTML = `
+        <tr>
+            <td colspan="3" class="emptyBooks">
+                📖 No books found.<br>
+                <small>Try another title, author, or category.</small>
+            </td>
+        </tr>`;
+        return;
+    }
+
+    filteredBooks.forEach(book=>{
+        table.innerHTML += `
+        <tr>
+            <td><strong>${book.title}</strong></td>
+            <td>${book.author}</td>
+            <td>📚 ${book.category}</td>
+        </tr>`;
+    });
+}
+
+// User search
+function searchUserBooks(){
+    loadUserBooks();
+}
+</script>
+
+</body>
+</html>
